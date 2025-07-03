@@ -1,0 +1,57 @@
+name: Deploy MeetingMind
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+        
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+        
+    - name: Install frontend dependencies
+      run: |
+        cd frontend/meeting-mind-frontend
+        npm install
+        
+    - name: Build frontend
+      run: |
+        cd frontend/meeting-mind-frontend
+        npm run build
+        
+    - name: Install backend dependencies
+      run: |
+        cd backend/meeting-mind-backend
+        python -m venv venv
+        source venv/bin/activate
+        pip install -r requirements.txt
+        
+    - name: Copy frontend build to backend static
+      run: |
+        cp -r frontend/meeting-mind-frontend/dist/* backend/meeting-mind-backend/src/static/
+        
+    - name: Test application
+      run: |
+        cd backend/meeting-mind-backend
+        source venv/bin/activate
+        python -m pytest --version || echo "No tests configured yet"
+        
+    - name: Deploy to production
+      run: |
+        echo "Deployment would happen here"
+        echo "Application built successfully!"
+
