@@ -1,0 +1,7 @@
+backend/meeting-mind-backend/venv/
+frontend/meeting-mind-frontend/node_modules/
+*.pyc
+__pycache__/
+.env
+.DS_Store
+*.log
